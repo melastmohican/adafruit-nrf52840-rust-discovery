@@ -35,14 +35,11 @@ jobs:
           sudo apt-get install -y libclang-dev clang
           echo "LIBCLANG_PATH=/usr/lib/x86_64-linux-gnu" >> $GITHUB_ENV
       - name: Setup Rust
-        uses: actions/setup-rust@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          rust-version: stable
-          # target is set via rustup target add
+          targets: thumbv7em-none-eabihf
       - name: Enable caching
         uses: Swatinem/rust-cache@v2
-      - name: Add Rust target
-        run: rustup target add thumbv7em-none-eabihf
       - name: Run command
         run: |
           cargo ${{ matrix.action.command }} ${{ matrix.action.args }}
