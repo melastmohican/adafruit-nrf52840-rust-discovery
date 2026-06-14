@@ -23,12 +23,13 @@ use defmt_rtt as _;
 use panic_probe as _;
 
 use embassy_executor::Spawner;
-use embassy_nrf::{bind_interrupts, peripherals, spim};
 use embassy_nrf::spim::Spim;
+use embassy_nrf::{bind_interrupts, peripherals, spim};
 use embassy_time::Timer;
 use smart_leds::{
-    RGB8, SmartLedsWrite, brightness, gamma,
-    hsv::{Hsv, hsv2rgb},
+    brightness, gamma,
+    hsv::{hsv2rgb, Hsv},
+    SmartLedsWrite, RGB8,
 };
 use ws2812_spi::Ws2812;
 
@@ -53,9 +54,7 @@ async fn main(_spawner: Spawner) {
     // We only need MOSI (P0.16) for driving the NeoPixel.
     // We use new_txonly_nosck to initialize it with just the MOSI pin.
     let spi = Spim::new_txonly_nosck(
-        p.SPI3,
-        Irqs,
-        p.P0_16, // MOSI
+        p.SPI3, Irqs, p.P0_16, // MOSI
         config,
     );
 

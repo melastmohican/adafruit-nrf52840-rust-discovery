@@ -1,0 +1,50 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**/README.md"
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust-checks:
+    name: Rust Checks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        action:
+          - command: build
+            args: --release --target thumbv7em-none-eabihf
+          - command: fmt
+            args: --all -- --check
+          - command: clippy
+            args: --target thumbv7em-none-eabihf --all-features --workspace -- -D warnings
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install libclang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libclang-dev clang
+          echo "LIBCLANG_PATH=/usr/lib/x86_64-linux-gnu" >> $GITHUB_ENV
+      - name: Setup Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+          # target is set via rustup target add
+      - name: Enable caching
+        uses: Swatinem/rust-cache@v2
+      - name: Add Rust target
+        run: rustup target add thumbv7em-none-eabihf
+      - name: Run command
+        run: |
+          cargo ${{ matrix.action.command }} ${{ matrix.action.args }}
+          cd softdevice-tests
+          cargo ${{ matrix.action.command }} ${{ matrix.action.args }}

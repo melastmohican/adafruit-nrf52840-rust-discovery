@@ -1,29 +1,17 @@
 [package]
-name = "adafruit-nrf52840-rust-discovery"
+name = "softdevice-tests"
 version = "0.1.0"
 edition = "2021"
-authors = ["Mariusz Jurgielewicz <mordor@mail.com>"]
-readme = "README.md"
-
 
 [dependencies]
 embassy-executor  = { version = "0.6", features = ["arch-cortex-m", "executor-thread", "integrated-timers", "defmt"] }
 embassy-nrf       = { version = "0.2", features = ["nrf52840", "time-driver-rtc1", "gpiote", "rt", "defmt"] }
 cortex-m-rt       = "0.7"
-cortex-m          = { version = "0.7.6", features = ["critical-section-single-core"] }
+cortex-m          = "0.7.6"
 defmt             = "0.3"
 defmt-rtt         = "0.4"
 panic-probe       = { version = "0.3", features = [] }
+nrf-softdevice    = { version = "0.1.0", default-features = false, features = ["s140", "nrf52840", "ble-peripheral", "defmt", "critical-section-impl"] }
 
 [dev-dependencies]
 embassy-time      = { version = "0.3" }
-smart-leds        = "0.4.0"
-ws2812-spi        = "0.5.1"
-[profile.release]
-codegen-units = 1
-debug         = true
-lto           = true
-
-[profile.dev]
-debug         = true
-opt-level     = 1    # needed to avoid stack overflows in debug builds with Embassy

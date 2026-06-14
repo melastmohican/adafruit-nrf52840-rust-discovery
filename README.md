@@ -26,16 +26,27 @@ See `memory.x` for full region map.
 
 If you accidentally erased the bootloader, flash the combined SD+bootloader hex:
 
-1. Download `feather_nrf52840_express_bootloader-X.X.X_s140_6.1.1.hex` from
+1. Download `feather_nrf52840_express_bootloader-0.11.0_s140_6.1.1.hex` from
    https://github.com/adafruit/Adafruit_nRF52_Bootloader/releases
 
 2. Flash it:
 ```bash
 probe-rs erase --chip nRF52840_xxAA --allow-erase-all
-probe-rs download --chip nRF52840_xxAA \
-  feather_nrf52840_express_bootloader-X.X.X_s140_6.1.1.hex \
-  --format hex
+
+probe-rs download --verify --binary-format hex feather_nrf52840_express_bootloader-0.11.0_s140_6.1.1.hex
+      Erasing ✔ 100% [####################] 196.00 KiB @  26.58 KiB/s (took 7s)
+  Programming ✔ 100% [####################] 196.00 KiB @  12.56 KiB/s (took 16s)
+    Verifying ✔ 100% [####################] 196.00 KiB @  16.63 KiB/s (took 12s) 
 ```
+
+## Getting latest S140 SoftDevice
+
+https://www.nordicsemi.com/Products/Development-software/S140/Download
+
+```bash
+probe-rs download --verify --binary-format hex --chip nRF52840_xxAA s140_nrf52_7.3.0_softdevice.hex
+```
+
 
 ## Examples
 
@@ -65,4 +76,20 @@ Cycles the onboard addressable RGB NeoPixel LED (P0.16) through rainbow colors u
 
 ```bash
 cargo run --example rgBlinky
+```
+
+### softdevice_check
+
+Demonstrates querying the SoftDevice version via raw API.
+
+```bash
+cargo run --example softdevice_check
+```
+
+### softdevice_mem_check
+
+Reads and prints SoftDevice information block.
+
+```bash
+cargo run --example softdevice_mem_check
 ```
