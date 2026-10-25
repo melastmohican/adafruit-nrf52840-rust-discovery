@@ -129,6 +129,12 @@ cd matter-examples
 cargo run --release --example matter_thread_coex_light    # builds, flashes and runs with probe-rs
 ```
 
+Once commissioned, Home Assistant shows the light and toggles the LED:
+
+![Home Assistant device page for the commissioned Matter light, with On/Off activity history](docs/images/matter_accessory.png)
+
+<img src="docs/images/matter_accessory_on.png" alt="Light on in Home Assistant" width="200"> <img src="docs/images/matter_accessory_off.png" alt="Light off in Home Assistant" width="200">
+
 The header comment of each Matter example lists the steps before `cargo run` (board layout, Home Assistant and Thread Border Router,
 removing the old node) and what to do after it starts (pairing, "Add anyway", checking the light). The Matter discriminator is random on
 every boot: read the QR code / pairing code from the RTT log. The
