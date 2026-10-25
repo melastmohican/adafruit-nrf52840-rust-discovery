@@ -45,3 +45,33 @@ jobs:
           cargo ${{ matrix.action.command }} ${{ matrix.action.args }}
           cd softdevice-tests
           cargo ${{ matrix.action.command }} ${{ matrix.action.args }}
+
+  examples:
+    name: Examples
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install libclang
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libclang-dev clang
+          echo "LIBCLANG_PATH=/usr/lib/x86_64-linux-gnu" >> $GITHUB_ENV
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: thumbv7em-none-eabihf
+          components: clippy
+      - name: Enable caching
+        uses: Swatinem/rust-cache@v2
+      - name: Plain examples (blinky, rgBlinky)
+        run: |
+          cargo build --release --target thumbv7em-none-eabihf --examples
+          cargo clippy --target thumbv7em-none-eabihf --examples -- -D warnings
+      # The Matter examples are a separate crate (own Cargo.lock): the Matter stack needs an allocator and its own critical-section.
+      - name: Matter over Thread examples (coex, and the experimental non-concurrent one)
+        working-directory: matter-examples
+        run: |
+          cargo build --release --target thumbv7em-none-eabihf --examples
+          cargo fmt --all -- --check
+          cargo clippy --target thumbv7em-none-eabihf --examples -- -D warnings
